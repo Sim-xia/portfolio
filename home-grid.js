@@ -60,14 +60,14 @@
         const s = size[j * cols + i];
         const cx = i * STEP + STEP / 2, cy = j * STEP + STEP / 2;
         if (s < 0.08) {
-          ctx.fillStyle = `rgba(${INK}, 0.22)`;
+          ctx.fillStyle = `rgba(${INK}, 0.12)`;
           ctx.fillRect(cx - DOT / 2, cy - DOT / 2, DOT, DOT);
           continue;
         }
         const side = DOT + (MAX - DOT) * s;
-        ctx.fillStyle = `rgba(250, 250, 250, ${0.9 * s})`;
+        ctx.fillStyle = `rgba(250, 250, 250, ${0.75 * s})`;
         ctx.fillRect(cx - side / 2, cy - side / 2, side, side);
-        ctx.strokeStyle = `rgba(${INK}, ${0.22 + 0.4 * s})`;
+        ctx.strokeStyle = `rgba(${INK}, ${0.12 + 0.24 * s})`;
         ctx.strokeRect(Math.round(cx - side / 2) + 0.5, Math.round(cy - side / 2) + 0.5, Math.round(side), Math.round(side));
       }
     }
