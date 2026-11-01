@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BIT ROT — Simon Xia</title>
+  <link rel="stylesheet" href="style.css">
+  <script>if (sessionStorage.getItem("portfolio-enter")) document.documentElement.classList.add("arriving");</script>
+</head>
+<body class="theme-bitrot">
+  <a class="back" href="index.html" data-return>← All works</a>
+
+  <!-- Introduction / Map design / Tutorial plan / Player's comments / Ludum Dare Results -->
+  <main class="work">
+
+    <section class="section hero">
+      <img class="shot cover" src="img/bitrot-cover.png" alt="BIT ROT cover">
+      <div>
+        <h1>BIT ROT</h1>
+        <p class="one-liner">A tactics deck builder where every shot builds a wall and every bite infects your memory.</p>
+        <div class="meta">
+          <span class="event">Ludum Dare 60 · Jam · theme “Old Tech” · 72 hours</span>
+          <span>Daniel Zhang · game mechanics</span>
+          <span>Simon Xia · building the mechanics into the game</span>
+          <span>Michael Zhang · art &nbsp;·&nbsp; Andson Luo · music</span>
+        </div>
+        <div class="actions">
+          <a class="btn" href="https://ralex-x.itch.io/bit-rot">Play on itch.io →</a>
+          <a class="text-link" href="https://ldjam.com/events/ludum-dare/60/bit-rot">Ludum Dare page</a>
+        </div>
+        <p class="note" style="margin-top:14px">Plays in the browser. Read Incoming before you end the turn: it is always exact.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">01</span><h2>Introduction</h2></div>
+      <p class="lead">You are a debugger dropped onto a board of bugs. Every shot builds a wall, and every bite corrupts a card in your deck. There is no luck in combat: every bug’s next move is shown before you commit.</p>
+      <div class="turn" style="margin-top:16px">
+        <div><b>DRAW</b>5 cards from your memory deck</div>
+        <div><b>SPEND</b>4 CPU on cards</div>
+        <div><b>FIRE</b>The side of your tile you fire from becomes a wall</div>
+        <div><b>READ</b>Incoming shows every bug’s path, attack and exact damage</div>
+        <div><b>END</b>Bugs move and bite; each point of damage corrupts a card</div>
+      </div>
+      <div class="strip" style="margin-top:16px">
+        <figure><img class="shot" src="img/bitrot-09-aim-up.jpg" alt="Aiming ZAP upward"><figcaption>Aim ZAP up</figcaption></figure>
+        <figure><img class="shot" src="img/bitrot-10-played-2.jpg" alt="ZAP fired; the tile edge becomes a wall"><figcaption>The top edge is now a wall, for the rest of the level</figcaption></figure>
+        <figure><img class="shot" src="img/bitrot-11-end-turn.jpg" alt="End of turn: the bug moves"><figcaption>End turn: the bug moves, exactly as Incoming showed</figcaption></figure>
+      </div>
+      <div class="split" style="margin-top:18px; grid-template-columns:300px 1fr; gap:36px; align-items:center">
+        <p style="font-size:14px">Memory is the health bar. Front slots put more copies of a card into the deck; damage corrupts from the back. Placing a card decides how often you draw it and how long it lasts.</p>
+        <div>
+          <div class="slots slots-compact" role="img" aria-label="Eight memory slots. Copies per slot: 4, 4, 3, 3, 2, 2, 1, 1. Slots 7 and 8 shown corrupted.">
+            <div class="slot"><span class="c">4</span></div><div class="slot"><span class="c">4</span></div>
+            <div class="slot"><span class="c">3</span></div><div class="slot"><span class="c">3</span></div>
+            <div class="slot"><span class="c">2</span></div><div class="slot"><span class="c">2</span></div>
+            <div class="slot rot"><span class="c">1</span></div><div class="slot rot"><span class="c">1</span></div>
+          </div>
+          <div class="slots-axis"><span>slot 1 · copies in deck · drawn most, breaks last</span><span>damage starts at slot 8 · corrupted = +1 CPU</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">02</span><h2>Map design</h2></div>
+      <p class="lead">There is no fixed map: walls only exist where someone fired. Each level gives the board one idea, and three bugs read walls in three different ways.</p>
+      <div class="levels" style="margin-top:18px">
+        <figure class="level">
+          <div class="board" style="--n:5"><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell exit">EXIT</div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><img src="img/sprites/spider1.png" alt="spider"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><img src="img/sprites/player_idle.png" alt="you"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+          <figcaption><b>1 · Tutorial</b> 5×5 · 10 turns<br>One spider, two cards. Every rule is met once, on purpose.</figcaption>
+        </figure>
+        <figure class="level">
+          <div class="board" style="--n:7"><div class="cell"></div><div class="cell"></div><div class="cell"><img src="img/sprites/fly1.png" alt="fly"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell exit">EXIT</div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><img src="img/sprites/fly1.png" alt="fly"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><img src="img/sprites/spider1.png" alt="spider"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><img src="img/sprites/player_idle.png" alt="you"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+          <figcaption><b>2 · Open field</b> 7×7 · 12 turns<br>Two flies and a spider; seven cards unlock, including SEQUENCE. First real deck decisions.</figcaption>
+        </figure>
+        <figure class="level">
+          <div class="board" style="--n:7"><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell wall"></div><div class="cell"></div><div class="cell"></div><div class="cell exit">EXIT</div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell wall"></div><div class="cell"></div><div class="cell"><img src="img/sprites/spider1.png" alt="spider"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><img src="img/sprites/fly1.png" alt="fly"></div><div class="cell wall"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><img src="img/sprites/spider1.png" alt="spider"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell wall"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell wall"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><img src="img/sprites/player_idle.png" alt="you"></div><div class="cell"></div><div class="cell"></div><div class="cell wall"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+          <figcaption><b>3 · The gap</b> 7×7 · 12 turns<br>A wall line with one opening. Whoever holds the gap holds the level.</figcaption>
+        </figure>
+        <figure class="level">
+          <div class="board" style="--n:7"><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><img src="img/sprites/moth1.png" alt="moth"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><img src="img/sprites/spider1.png" alt="spider"></div><div class="cell"></div><div class="cell wall"></div><div class="cell wall"></div><div class="cell wall"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell wall"></div><div class="cell wall"></div><div class="cell wall"></div><div class="cell"><img src="img/sprites/fly1.png" alt="fly"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell wall"></div><div class="cell wall"></div><div class="cell wall"></div><div class="cell"></div><div class="cell wall"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"><img src="img/sprites/player_idle.png" alt="you"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+          <figcaption><b>4 · The Moth</b> 7×7 · 12 turns<br>No exit: the boss must die. It phases through the block in the middle.</figcaption>
+        </figure>
+      </div>
+      <div class="bugs" style="margin-top:20px">
+        <div><img src="img/sprites/fly1.png" alt=""><p><b>Fly</b> · 1 HP · moves 3<br>Flies over walls, but cannot bite through them.</p></div>
+        <div><img src="img/sprites/spider1.png" alt=""><p><b>Spider</b> · 3 HP · moves 2<br>Crawls around walls; bites hard (2).</p></div>
+        <div><img src="img/sprites/moth1.png" alt=""><p><b>Moth</b> · 5 HP · moves 4 · boss<br>Phases through walls. Marks a row and column; they go off next turn.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">03</span><h2>Tutorial plan</h2></div>
+      <div class="split" style="grid-template-columns:360px 1fr">
+        <div class="side">
+          <p>The tutorial is level 1 itself: a 5 × 5 board, one spider with 2 HP, and only MOVE and ZAP in the deck. Each step waits for the action it asks for and highlights the one thing it is about.</p>
+          <p>The player takes a bite on purpose (step 5). Damage is the rule most likely to be misread, so it is shown happening before it can go wrong.</p>
+          <p>Step 7 teaches the central trick in one move: ZAP deals damage and builds the wall that blocks the next bite. ZAP then hits through that wall to finish the spider.</p>
+          <p class="note" style="margin-top:14px">Players still found it dense: nine steps, all in one level. See the comments below.</p>
+        </div>
+        <ol class="steps">
+          <li><b>Goal</b>Reach the exit.</li>
+          <li><b>Select</b>Pick a MOVE card (click it or press its number).</li>
+          <li><b>Aim</b>Hover a highlighted tile to preview; click it again to play.</li>
+          <li><b>Read</b>A red line means the spider will reach you and bite when you end the turn.</li>
+          <li><b>Take the bite</b>End the turn.</li>
+          <li><b>Memory</b>Each damage breaks one memory slot, from slot 8 upward. A broken card costs +1 CPU.</li>
+          <li><b>ZAP</b>The spider rests after biting. ZAP it: 1 damage and a wall on that side of your tile.</li>
+          <li><b>Through the wall</b>The wall blocks its next bite. ZAP hits through walls: ZAP again to finish it.</li>
+          <li><b>Reward</b>Bug killed: +1 upgrade point, banked when you clear the level. Now reach the exit.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">04</span><h2>Player’s comments</h2></div>
+      <div class="ccols">
+        <div>
+          <div class="side ccol-head">
+            <h3>WHAT LANDED</h3>
+            <p>Players described the trade-off, not the damage: shooting is also building, and health is also the deck. The theme was read through the rules, not just the art.</p>
+          </div>
+          <div class="cshots">
+            <img src="img/comments/bit-rot/5.png" alt="Comment by perrarancino on the Ludum Dare page">
+            <img src="img/comments/bit-rot/1.png" alt="Comment by David Fiattarone on the Ludum Dare page">
+            <img src="img/comments/bit-rot/2.png" alt="Comment by Tykki19 on the Ludum Dare page">
+          </div>
+        </div>
+        <div>
+          <div class="side ccol-head">
+            <h3>WHAT DID NOT</h3>
+            <p>The rules were hard to learn: too much at once, some of it only outside the level. It points to card previews, memory effects kept visible in play, and one rule at a time.</p>
+          </div>
+          <div class="cshots">
+            <img src="img/comments/bit-rot/3.png" alt="Comment by CodeRaurus on the Ludum Dare page">
+            <img src="img/comments/bit-rot/4.png" alt="Comment by baziki on the Ludum Dare page">
+            <img src="img/comments/bit-rot/6.png" alt="Comment by Ueighti on the Ludum Dare page">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">05</span><h2>Current status</h2></div>
+      <p class="lead">Ludum Dare 60 is still in its rating period; final results come out when it closes. Where the entry stands on 1 November 2026:</p>
+      <div class="stats4" style="margin-top:22px">
+        <div class="stat"><b>23</b><span>comments from 22 players</span></div>
+        <div class="stat"><b>36</b><span>ratings received (35.6, averaged across categories)</span></div>
+        <div class="stat"><b>46</b><span>comments we left on other entries</span></div>
+        <div class="stat"><b>16</b><span>replies we wrote to our own comments</span></div>
+      </div>
+      <p class="note" style="margin-top:18px">Figures from the Ludum Dare entry page and its public API.</p>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">→</span><h2>Other works</h2></div>
+      <nav class="others">
+        <a class="entry" href="platuzzle.html" data-bg="#d7d7d7" data-style="platuzzle">
+          <img class="shot cover" src="img/platuzzle-cover.png" alt="Platuzzle cover">
+          <div class="label"><span class="title">Platuzzle</span><span class="tag">Playable · 12 days · team of 3</span></div>
+        </a>
+        <a class="entry" href="lightpath.html" data-bg="#06090d" data-style="lightpath">
+          <img class="shot cover" src="img/lightpath-cover.jpg" alt="Lightpath, level SNF-1 in the 3D view">
+          <div class="label"><span class="title">Lightpath</span><span class="tag">Long-term · engineering log</span></div>
+        </a>
+      </nav>
+    </section>
+
+  </main>
+  <script src="transition.js"></script>
+</body>
+</html>

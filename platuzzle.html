@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Platuzzle — Simon Xia</title>
+  <link rel="stylesheet" href="style.css">
+  <script>if (sessionStorage.getItem("portfolio-enter")) document.documentElement.classList.add("arriving");</script>
+</head>
+<body class="theme-platuzzle">
+  <a class="back" href="index.html" data-return>← All works</a>
+
+  <!-- Introduction / Map design / Tutorial plan / Player's comments / Bezi Results -->
+  <main class="work">
+
+    <section class="section hero">
+      <img class="shot cover" src="img/platuzzle-cover.png" alt="Platuzzle cover">
+      <div>
+        <h1>Platuzzle</h1>
+        <p class="one-liner">An intricate collision of spatial recombination and parkour, where you run through the routes you build yourself.</p>
+        <div class="meta">
+          <span class="event">Bezi Mega Jam · theme “Genre Collision” · 12 days</span>
+          <span>Simon Xia · design, build</span>
+          <span>Terry Shi · co-design &nbsp;·&nbsp; Jeremy Bi · code assist</span>
+          <span>Godot · plays in the browser</span>
+        </div>
+        <div class="actions">
+          <a class="btn" href="https://ralex-x.itch.io/platuzzle">Play on itch.io →</a>
+          <a class="text-link" href="https://itch.io/jam/bezi-mega-jam-1/rate/5067845">Jam page</a>
+        </div>
+        <p class="note" style="margin-top:14px">Run to the first cyan gem, then press Tab and swap the room you are standing in.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">01</span><h2>Introduction</h2></div>
+      <p class="lead">Two genres share one map. The puzzle decides where the route goes; the platforming decides whether you can actually run it.</p>
+      <div class="turn" style="grid-template-columns:repeat(3,1fr); margin-top:18px">
+        <div><b>RUN</b>A / D to move, Space to jump. Reach the gem.</div>
+        <div><b>PLAN</b>Tab opens the map of nine rooms on a 3×3 grid.</div>
+        <div><b>SWAP</b>Swap the room you are standing in with a neighbour, then run through the new connection.</div>
+      </div>
+      <div class="cols-2" style="margin-top:20px">
+        <figure><img class="shot wide" src="img/platuzzle-07-plan.jpg" alt="Plan view: swapping rooms"><figcaption>Plan: rooms 1 and 2 about to change places</figcaption></figure>
+        <figure><img class="shot wide" src="img/platuzzle-05-jump.jpg" alt="Action view: jumping"><figcaption>Run: the route you just built</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">02</span><h2>Map design</h2></div>
+      <div class="rooms" style="grid-template-columns:auto 1fr">
+        <img style="height:min(calc(100vh - 330px), 430px)" src="img/platuzzle-rooms.png" alt="All nine rooms in their starting layout, with the six gems and the start position">
+        <div class="side">
+          <p>Nine rooms of 32 × 32 tiles, drawn here from the game’s room files in their starting layout. Which rooms connect depends on what you place next to what, and rooms move during the run, so the route below is a sequence of rooms rather than a path on this picture.</p>
+          <p>Room 3 and room 6 are each visited twice for different gems: the same room becomes a different place once its neighbours change.</p>
+          <div class="key" style="grid-template-columns:18px 1fr 18px 1fr 18px 1fr">
+            <i style="background:#111"></i><span>Wall</span>
+            <i style="background:linear-gradient(#111 0 3px, transparent 3px)"></i><span>One-way platform</span>
+            <i style="background:linear-gradient(transparent 0 10px, #d64034 10px)"></i><span>Hazard</span>
+            <i style="background:#00b0d0; transform:rotate(45deg) scale(.75)"></i><span>Gem</span>
+            <i style="background:#fafafa; border:2px solid #111"></i><span>Start</span>
+          </div>
+        </div>
+      </div>
+      <p class="card-head" style="margin-top:20px">ONE FULL SOLUTION · 12 ROOM VISITS · 16 SWAPS</p>
+      <ol class="route" aria-label="Route: room 1, room 2 with gem 1, room 3 with gem 2, room 4, room 5, room 3 with gem 3, room 6 with gem 4, room 8, room 6 with gem 5, room 7, room 2, room 6B with gem 6">
+        <li><img src="img/pz-room-1.png" alt=""><span>1</span></li>
+        <li class="gem"><img src="img/pz-room-2.png" alt=""><span>2</span><em>1</em></li>
+        <li class="gem"><img src="img/pz-room-3.png" alt=""><span>3</span><em>2</em></li>
+        <li><img src="img/pz-room-4.png" alt=""><span>4</span></li>
+        <li><img src="img/pz-room-5.png" alt=""><span>5</span></li>
+        <li class="gem"><img src="img/pz-room-3.png" alt=""><span>3</span><em>3</em></li>
+        <li class="gem"><img src="img/pz-room-6.png" alt=""><span>6</span><em>4</em></li>
+        <li><img src="img/pz-room-8.png" alt=""><span>8</span></li>
+        <li class="gem"><img src="img/pz-room-6.png" alt=""><span>6</span><em>5</em></li>
+        <li><img src="img/pz-room-7.png" alt=""><span>7</span></li>
+        <li><img src="img/pz-room-2.png" alt=""><span>2</span></li>
+        <li class="gem"><img src="img/pz-room-6B.png" alt=""><span>6B</span><em>6</em></li>
+      </ol>
+      <p class="note" style="margin-top:10px">Replayed end to end by an automated test with normal controls and legal swaps only. One working solution, not the shortest.</p>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">03</span><h2>Tutorial plan</h2></div>
+      <p class="lead">There is no tutorial screen. The only standing text is “Reach the gem.” Everything else is taught by where the gems are and how much of the map exists yet.</p>
+      <div class="rules" style="margin-top:22px">
+        <div><h3>ONE IDEA PER GEM</h3><p>Each stretch of the route confirms one thing: that you will swap rooms for a gem you can see; that a corridor can wait while the real target is further down; that the same room can be run twice; that a narrow edge matters more than an open one.</p></div>
+        <div><h3>THE BOARD GROWS</h3><p>The run starts with only rooms 1 and 2. The first gem adds room 3 on a 2 × 2 board with one empty slot; the second gem opens all nine. The first swap is learned with almost nothing else to choose from.</p></div>
+        <div><h3>HINTS ARRIVE ON TIME</h3><p>Room 1 shows movement and jumping. After the first gem, Tab is introduced, the game asks for room 2 above room 3, confirms the connected edge, and acknowledges when you step through it.</p></div>
+        <div><h3>THEN LET GO</h3><p>The first three gems appear one at a time, in order. From the fourth on, the rest appear together and can be taken in any order.</p></div>
+      </div>
+      <div class="cols-2" style="margin-top:26px; gap:40px">
+        <blockquote class="quote">If a stretch keeps failing, fix it in this order: move the gem somewhere easier to see; make unconnected edges clearer in the plan view; only then add a short line of text.<cite>tutorial plan (translated)</cite></blockquote>
+        <blockquote class="quote">The tutorial works when someone with no explanation can get from the first gem to the last, and can say: “the gem is in another room, so I have to swap rooms.”<cite>tutorial plan (translated)</cite></blockquote>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">04</span><h2>Player’s comments</h2></div>
+      <div class="split">
+        <div class="side">
+          <p>The core idea read straight away: seeing two rooms change places made the genre collision tangible.</p>
+          <p>The cost showed too. One player got stuck in room 4 and never reached the last gems. Swapping can build dead ends, and the game does too little to show you are in one.</p>
+        </div>
+        <div class="cshots">
+          <img src="img/comments/platuzzle/2.png" alt="Comment by tsgamestudio on the jam page">
+          <img src="img/comments/platuzzle/1.png" alt="Comment by Dolan Games on the jam page">
+          <img src="img/comments/platuzzle/3.png" alt="Comment by Fridgecrisis on the jam page">
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">05</span><h2>Bezi Results</h2></div>
+      <div class="split">
+        <div class="side">
+          <div class="stat"><b>24 / 25</b><span>First pass: top score among 213 judged games, shared with 11 others</span></div>
+          <div class="stat" style="margin-top:18px"><b>19 / 25</b><span>Final round: 24th of 29 finalists</span></div>
+          <p style="margin-top:18px">Polish held at 5. Gameplay dropped the most, from 5 to 3.</p>
+        </div>
+        <figure>
+          <div class="legend"><span><i class="first"></i>First pass</span><span><i class="final"></i>Final round</span></div>
+          <div class="scores" role="img" aria-label="Scores out of 5, first pass then final: Gameplay and core idea 5, 3. Creativity and theme 5, 4. Polish and presentation 5, 5. Technical execution 5, 4. Scope and completion 4, 3.">
+            <span>Gameplay &amp; core idea</span><div class="track"><i class="first" style="width:100%"></i><i class="final" style="width:60%"></i></div><span class="val">5 → 3</span>
+            <span>Creativity &amp; theme</span><div class="track"><i class="first" style="width:100%"></i><i class="final" style="width:80%"></i></div><span class="val">5 → 4</span>
+            <span>Polish &amp; presentation</span><div class="track"><i class="first" style="width:100%"></i><i class="final" style="width:100%"></i></div><span class="val">5 → 5</span>
+            <span>Technical execution</span><div class="track"><i class="first" style="width:100%"></i><i class="final" style="width:80%"></i></div><span class="val">5 → 4</span>
+            <span>Scope &amp; completion</span><div class="track"><i class="first" style="width:80%"></i><i class="final" style="width:60%"></i></div><span class="val">4 → 3</span>
+          </div>
+          <figcaption style="margin-top:14px">Out of 5 per category. Source: the organisers’ judging sheet, shown on the results livestream.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">→</span><h2>Other works</h2></div>
+      <nav class="others">
+        <a class="entry" href="bit-rot.html" data-bg="#101820" data-style="bitrot">
+          <img class="shot cover" src="img/bitrot-cover.png" alt="BIT ROT cover">
+          <div class="label"><span class="title">BIT ROT</span><span class="tag">Playable · 72 h · team of 4</span></div>
+        </a>
+        <a class="entry" href="lightpath.html" data-bg="#06090d" data-style="lightpath">
+          <img class="shot cover" src="img/lightpath-cover.jpg" alt="Lightpath, level SNF-1 in the 3D view">
+          <div class="label"><span class="title">Lightpath</span><span class="tag">Long-term · engineering log</span></div>
+        </a>
+      </nav>
+    </section>
+
+  </main>
+  <script src="platuzzle-bg.js"></script>
+  <script src="transition.js"></script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lightpath — Simon Xia</title>
+  <link rel="stylesheet" href="style.css">
+  <script>if (sessionStorage.getItem("portfolio-enter")) document.documentElement.classList.add("arriving");</script>
+</head>
+<body class="theme-lightpath">
+  <a class="back" href="index.html" data-return>← All works</a>
+
+  <!-- 证明：工程基础和长线成长。先讲成长，不炫技；细节留给文书。没有试玩、没有评论。 -->
+  <main class="work">
+
+    <section class="section hero">
+      <img class="shot cover" src="img/lightpath-cover.jpg" alt="Lightpath, level SNF-1 in the 3D view">
+      <div>
+        <h1>Lightpath <small>(Lumena)</small></h1>
+        <p class="one-liner">A turn-based grid puzzle game where light is the rule: it decides what you can see, what is safe, and what the machines do.</p>
+        <div class="meta">
+          <span>Oct 2025 → now</span>
+          <span>Solo</span>
+          <span>Godot</span>
+          <span>Not publicly playable · shown as an engineering log</span>
+        </div>
+        <p class="note">This page is about how the project grew, not what it has.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">01</span><h2>How it is built</h2></div>
+      <svg class="diagram" viewBox="0 0 1020 260" role="img" aria-label="Level file, then parser and loader, then the 2D grid rules, which are authoritative, then a read-only snapshot, then the 3D isometric view. Undo stores the state before and after each turn.">
+        <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#c9d0d8"/></marker></defs>
+        <g fill="none" stroke="currentColor" stroke-width="1">
+          <rect x="20" y="40" width="150" height="90"/>
+          <rect x="200" y="40" width="150" height="90"/>
+          <rect class="hi" x="380" y="30" width="240" height="110" stroke-width="2"/>
+          <rect x="650" y="40" width="150" height="90" stroke-dasharray="4 4"/>
+          <rect x="830" y="40" width="170" height="90"/>
+          <rect x="380" y="190" width="240" height="50"/>
+          <path d="M170 85H198M350 85H378M620 85H648M800 85H828" marker-end="url(#arr)"/>
+          <path d="M500 140V188" marker-end="url(#arr)"/>
+        </g>
+        <text x="95" y="80" text-anchor="middle">Level file</text><text class="small" x="95" y="100" text-anchor="middle">KDL level files</text>
+        <text x="275" y="80" text-anchor="middle">Parser · loader</text><text class="small" x="275" y="100" text-anchor="middle">checked on load</text>
+        <text x="500" y="66" text-anchor="middle" font-weight="600">Grid rules (2D)</text>
+        <text class="small" x="500" y="88" text-anchor="middle">light · circuits · Elena · turns</text>
+        <text class="small" x="500" y="108" text-anchor="middle">the only authority</text>
+        <text x="725" y="80" text-anchor="middle">Snapshot</text><text class="small" x="725" y="100" text-anchor="middle">read-only</text>
+        <text x="915" y="80" text-anchor="middle">3D isometric view</text><text class="small" x="915" y="100" text-anchor="middle">draws, never decides</text>
+        <text x="500" y="212" text-anchor="middle">Undo</text><text class="small" x="500" y="230" text-anchor="middle">state before and after each turn</text>
+        <text class="small" x="660" y="220">172 tests run on the rules, headless</text>
+      </svg>
+      <p class="lead" style="margin-top:24px">The rules live on a flat grid and the 3D view only reads them, so a richer picture can never change what a move does, and every rule can be tested without drawing a frame.</p>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">02</span><h2>Five Codemap snapshots</h2></div>
+      <p class="lead">I built a Codemap of the code at five commits across the year. The layers came apart one at a time.</p>
+      <div class="arch" style="margin-top:24px">
+        <div class="arch-col"><p class="arch-ver">V1<span>Oct 2025</span></p>
+          <div class="blk">Scene: logic + drawing</div>
+          <p class="arch-cap">The player’s position is where it is drawn</p></div>
+        <div class="arch-col"><p class="arch-ver">V2<span>Feb 2026</span></p>
+          <div class="blk">Rules + tweens + drawing</div><div class="blk">AI · pure logic</div>
+          <p class="arch-cap">Rules and drawing still in one place</p></div>
+        <div class="arch-col"><p class="arch-ver">V3<span>May 2026</span></p>
+          <div class="blk-row"><div class="blk">Light logic</div><div class="blk">Rendering</div></div><div class="blk">Entities: still mixed</div>
+          <p class="arch-cap">Lighting split from drawing</p></div>
+        <div class="arch-col"><p class="arch-ver">V4<span>Aug 2026</span></p>
+          <div class="blk hi">2D rules · authority</div><div class="flow">↓ snapshot</div><div class="blk dash">3D host · tests only</div>
+          <p class="arch-cap">The view only reads; 2D still the default</p></div>
+        <div class="arch-col"><p class="arch-ver">V5<span>Oct 2026</span></p>
+          <div class="blk hi">2D rules · authority</div><div class="flow">↓ snapshot</div><div class="blk hi">3D isometric view</div>
+          <p class="arch-cap">3D on by default; dead code archived</p></div>
+      </div>
+      <table class="data" style="margin-top:20px">
+        <tbody>
+          <tr><th>Lighting</th><td>1 backend · 372 lines</td><td>1 · 813 lines</td><td>3 backends · 4,378</td><td>3 · 4,883</td><td>1 in production · 5,259</td></tr>
+          <tr><th>Undo</th><td>Reload the scene</td><td>Full snapshots, up to 200</td><td>+ undo lock</td><td>State before and after each turn</td><td>Same</td></tr>
+          <tr><th>Level loading</th><td>Line-by-line regex</td><td>Lexer → parser → loader</td><td>Can write levels back</td><td>Syntax tree, validation, editor</td><td>Same</td></tr>
+          <tr><th>Tests</th><td class="num">0</td><td class="num">27</td><td class="num">74</td><td class="num">~145</td><td class="num">172</td></tr>
+        </tbody>
+      </table>
+      <p class="note" style="margin-top:16px">Not every line went the right way: the main lighting file kept growing, and only V5 cut three lighting backends down to one production path.</p>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">03</span><h2>Levels over a year</h2></div>
+      <p class="lead">Every level file at each snapshot. Some levels exist only to pin down a fixed bug; those are the regression levels.</p>
+      <div class="lv-legend" style="margin-top:20px">
+        <span><i class="lv slice new"></i>vertical slice</span><span><i class="lv play new"></i>level</span><span><i class="lv hub new"></i>hub</span><span><i class="lv reg new"></i>regression level</span><span><i class="lv test new"></i>prototype / test</span><span><i class="lv play"></i>faded = carried over</span>
+      </div>
+      <div class="lv-map">
+        <div class="lv-row"><div class="lv-ver">V1<span>Oct 2025</span></div><div class="lv-dots"><i class="lv play new" title="advanced_01"></i><i class="lv play new" title="easy_full_01"></i><i class="lv play new" title="minimal_01"></i><i class="lv test new" title="mirror_test"></i><i class="lv test new" title="native_light_test"></i><i class="lv test new" title="no_attenuation_test"></i><i class="lv test new" title="performance_test"></i><i class="lv play new" title="room_minimal_01"></i><i class="lv test new" title="simple_test"></i><i class="lv test new" title="test_kdl"></i><i class="lv test new" title="test_mirror_basic"></i><i class="lv test new" title="thin_wall_test"></i><i class="lv play new" title="tutorial_01"></i><i class="lv test new" title="wall_switch_test"></i></div><div class="lv-note"><b>14</b> files · Prototype rooms and engine tests in JSON; no real levels yet</div></div>
+        <div class="lv-row"><div class="lv-ver">V2<span>Feb 2026</span></div><div class="lv-dots"><i class="lv play new" title="1.1"></i><i class="lv play new" title="1.2"></i><i class="lv play new" title="1.3"></i><i class="lv play new" title="1.4"></i><i class="lv play new" title="1.5"></i></div><div class="lv-note"><b>5</b> files · First chapter: 1.1 to 1.5</div></div>
+        <div class="lv-row"><div class="lv-ver">V3<span>May 2026</span></div><div class="lv-dots"><i class="lv play new" title="1-1"></i><i class="lv play" title="1.1"></i><i class="lv play new" title="1.10"></i><i class="lv play" title="1.2"></i><i class="lv play" title="1.3"></i><i class="lv play" title="1.4"></i><i class="lv play" title="1.5"></i><i class="lv play new" title="1.6"></i><i class="lv play new" title="1.7"></i><i class="lv play new" title="1.8"></i><i class="lv play new" title="1.9"></i><i class="lv test new" title="aaa"></i><i class="lv test new" title="elena_test1"></i><i class="lv hub new" title="hub"></i><i class="lv hub new" title="hub_snapshot"></i><i class="lv reg new" title="mirror_regression"></i><i class="lv reg new" title="mirror_regression_light"></i><i class="lv reg new" title="mirror_regression_sync"></i><i class="lv reg new" title="mirror_regression_undo"></i><i class="lv test new" title="mirror_test"></i><i class="lv test new" title="plate2"></i></div><div class="lv-note"><b>21</b> files · Chapter 1 grows to ten levels; a hub; mirror bugs kept as regression levels</div></div>
+        <div class="lv-row"><div class="lv-ver">V4<span>Aug 2026</span></div><div class="lv-dots"><i class="lv play" title="1-1"></i><i class="lv play" title="1.10"></i><i class="lv play" title="1.2"></i><i class="lv play" title="1.3"></i><i class="lv play" title="1.4"></i><i class="lv play" title="1.5"></i><i class="lv play" title="1.6"></i><i class="lv play" title="1.7"></i><i class="lv play" title="1.8"></i><i class="lv play" title="1.9"></i><i class="lv test" title="aaa"></i><i class="lv reg new" title="elena-regressive1"></i><i class="lv reg new" title="elena-regressive2"></i><i class="lv reg new" title="elena-regressive3"></i><i class="lv test" title="elena_test1"></i><i class="lv hub" title="hub"></i><i class="lv hub" title="hub_snapshot"></i><i class="lv reg" title="mirror_regression"></i><i class="lv reg" title="mirror_regression_light"></i><i class="lv reg" title="mirror_regression_sync"></i><i class="lv reg" title="mirror_regression_undo"></i><i class="lv test" title="mirror_test"></i><i class="lv test" title="plate2"></i><i class="lv reg new" title="pressure_plate_release_regression"></i><i class="lv play new" title="snf-1"></i><i class="lv play new" title="snf-1R"></i><i class="lv play new" title="snf-2"></i><i class="lv play new" title="snf-2R"></i><i class="lv play new" title="snf-3"></i><i class="lv play new" title="snf-4"></i><i class="lv play new" title="snf-6"></i></div><div class="lv-note"><b>31</b> files · SNF series (SNF-1 to 6, with R variants); Elena regression levels</div></div>
+        <div class="lv-row"><div class="lv-ver">V5<span>Oct 2026</span></div><div class="lv-dots"><i class="lv play" title="1-1"></i><i class="lv play" title="1.10"></i><i class="lv play" title="1.2"></i><i class="lv play" title="1.3"></i><i class="lv play" title="1.4"></i><i class="lv play" title="1.5"></i><i class="lv play" title="1.6"></i><i class="lv play" title="1.7"></i><i class="lv play" title="1.8"></i><i class="lv play" title="1.9"></i><i class="lv test" title="aaa"></i><i class="lv reg" title="elena-regressive1"></i><i class="lv reg" title="elena-regressive2"></i><i class="lv reg" title="elena-regressive3"></i><i class="lv test" title="elena_test1"></i><i class="lv hub" title="hub"></i><i class="lv hub" title="hub_snapshot"></i><i class="lv slice new" title="igf-00"></i><i class="lv slice new" title="igf-01"></i><i class="lv slice new" title="igf-02"></i><i class="lv slice new" title="igf-03"></i><i class="lv reg" title="mirror_regression"></i><i class="lv reg" title="mirror_regression_light"></i><i class="lv reg" title="mirror_regression_sync"></i><i class="lv reg" title="mirror_regression_undo"></i><i class="lv test" title="mirror_test"></i><i class="lv test" title="plate2"></i><i class="lv reg" title="pressure_plate_release_regression"></i><i class="lv play" title="snf-1"></i><i class="lv play" title="snf-1R"></i><i class="lv play" title="snf-2"></i><i class="lv play" title="snf-2R"></i><i class="lv play" title="snf-3"></i><i class="lv play" title="snf-4"></i><i class="lv play" title="snf-6"></i></div><div class="lv-note"><b>35</b> files · IGF-00 to 03: the vertical slice</div></div>
+      </div>
+      <div class="cols-2" style="margin-top:24px; max-width:720px">
+        <figure><img class="shot wide" src="img/lightpath-early.jpg" alt="October 2025 build: flat 2D prototype"><figcaption>Oct 2025 · first build</figcaption></figure>
+        <figure><img class="shot wide" src="img/lightpath-now.jpg" alt="October 2026 build: SNF-1 in the 3D view"><figcaption>Oct 2026 · SNF-1, 3D view</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><span class="idx">→</span><h2>Other works</h2></div>
+      <nav class="others">
+        <a class="entry" href="bit-rot.html" data-bg="#101820" data-style="bitrot">
+          <img class="shot cover" src="img/bitrot-cover.png" alt="BIT ROT cover">
+          <div class="label"><span class="title">BIT ROT</span><span class="tag">Playable · 72 h · team of 4</span></div>
+        </a>
+        <a class="entry" href="platuzzle.html" data-bg="#d7d7d7" data-style="platuzzle">
+          <img class="shot cover" src="img/platuzzle-cover.png" alt="Platuzzle cover">
+          <div class="label"><span class="title">Platuzzle</span><span class="tag">Playable · 12 days · team of 3</span></div>
+        </a>
+      </nav>
+    </section>
+
+  </main>
+  <script src="transition.js"></script>
+</body>
+</html>
