@@ -147,27 +147,38 @@ html.arriving .back { animation: none; opacity: 0; }
 .shot.wide { aspect-ratio: 16 / 10; object-fit: cover; }
 
 /* ---------- home ---------- */
-.home-name {
-  position: absolute;
-  top: 28px;
-  left: 32px;
-  font: 12px/1.7 var(--mono);
-  letter-spacing: 0.06em;
-}
-.home-name span { display: block; color: var(--ink-soft); }
-
-/* cover height = (viewport − 32px×2 padding − 40px row gap − 2×52px labels) / 2 */
-.triangle {
-  --cover-h: calc((100vh - 64px - 40px - 104px) / 2);
+/* Two interlocking L shapes: covers fill the right-hand L (BIT ROT top right, Platuzzle bottom
+   middle, Lightpath bottom right); text fills the other (title across the top, index bottom left).
+   cover height = (viewport − 2×40px padding − 32px row gap − 2×52px labels) / 2 */
+.home-bg { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+.home-grid {
+  --cover-h: calc((100vh - 80px - 32px - 104px) / 2);
+  --cover-w: calc(var(--cover-h) * 630 / 500);
+  position: relative;
+  z-index: 1;
   height: 100vh;
   display: grid;
-  grid-template-columns: repeat(2, calc(var(--cover-h) * 630 / 500));
-  justify-content: center;
-  align-content: center;
-  gap: 40px 72px;
-  padding: 32px;
+  grid-template-columns: minmax(0, 1fr) var(--cover-w) var(--cover-w);
+  grid-template-rows: 1fr 1fr;
+  gap: 32px 40px;
+  padding: 40px 56px;
+  max-width: 1500px;
+  margin: 0 auto;
 }
-.triangle .entry:first-child { grid-column: 1 / -1; justify-self: center; width: calc(var(--cover-h) * 630 / 500); }
+.home-title { grid-column: 1 / 3; grid-row: 1; align-self: end; padding-bottom: 8px; }
+.home-title .kicker { font: 600 14px var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 14px; }
+.home-title h1 { font-size: clamp(56px, 15vh, 120px); line-height: 0.92; white-space: nowrap; letter-spacing: -0.02em; font-weight: 700; margin: 0; }
+.e-bitrot { grid-column: 3; grid-row: 1; }
+.e-platuzzle { grid-column: 2; grid-row: 2; }
+.e-lightpath { grid-column: 3; grid-row: 2; }
+.home-index { grid-column: 1; grid-row: 2; align-self: start; border-top: 1px solid var(--ink); padding-top: 14px; }
+.home-lead { font-size: 18px; font-weight: 600; margin: 0 0 14px; }
+.home-index ol { list-style: none; margin: 0 0 16px; padding: 0; counter-reset: w; }
+.home-index li { counter-increment: w; position: relative; padding: 0 0 12px 32px; font-size: 14px; line-height: 1.45; }
+.home-index li::before { content: "0" counter(w); position: absolute; left: 0; top: 1px; font: 12px var(--mono); color: var(--ink-soft); }
+.home-index li b { font-weight: 600; margin-right: 8px; }
+.home-index li span { font: 11px var(--mono); color: var(--ink-soft); }
+.home-index li span::after { content: ""; display: block; }
 
 .entry { display: block; text-decoration: none; }
 .entry .label { margin-top: 10px; height: 42px; }
@@ -477,7 +488,7 @@ body.theme-bitrot::before {
   z-index: -1;
   pointer-events: none;
   background:
-    repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.22) 0 2px, transparent 2px 5px),
     radial-gradient(ellipse at 50% 45%, rgba(40, 70, 60, 0.10) 0%, transparent 55%, rgba(0, 0, 0, 0.5) 100%);
 }
 body.theme-bitrot .section-head { align-items: center; }
@@ -510,8 +521,9 @@ body.theme-bitrot .turn { background: rgba(20, 32, 40, 0.6); }
   main.work { padding: 0 20px; }
   .hero { grid-template-columns: 1fr; padding-top: 64px; }
   .hero .shot { width: 100%; height: auto; }
-  .triangle { height: auto; grid-template-columns: 1fr; padding: 96px 20px 40px; }
-  .triangle .entry:first-child { width: auto; }
+  .home-grid { height: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; padding: 56px 20px 40px; }
+  .home-grid > * { grid-column: auto; grid-row: auto; min-width: 0; }
+  .home-title h1 { font-size: 56px; white-space: normal; }
   .strip, .cols-2, .cols-3, .comments, .others, .rules, .stations, .shots-grid, .arch, .lv-row, .split, .rooms, .turn, .slots, .levels, .bugs, .ccols, .stats4 { grid-template-columns: 1fr; }
   .timeline { grid-auto-flow: row; border-top: 0; border-left: 1px solid var(--ink); }
   .timeline .step { padding: 0 0 16px 20px; }

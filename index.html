@@ -6,13 +6,17 @@
   <title>Simon Xia — Games</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <div class="home-name">SIMON XIA<span>Game design · 3 works</span></div>
+<body class="home">
+  <!-- 两个互扣的 L：作品占右边（BIT ROT 右上、Platuzzle 中下、Lightpath 右下），
+       文字占左上横条 + 左下竖条。窄屏改为竖排。 -->
+  <main class="home-grid">
 
-  <!-- 入口：三个作品按三角形静态排列（上一下二）；窄屏改为竖排 -->
-  <nav class="triangle" aria-label="Choose a work">
+    <header class="home-title">
+      <p class="kicker">Simon Xia · 3 works</p>
+      <h1>Game design<br>portfolio</h1>
+    </header>
 
-    <a class="entry" href="bit-rot.html" data-bg="#101820" data-style="bitrot">
+    <a class="entry e-bitrot" href="bit-rot.html" data-bg="#101820" data-style="bitrot">
       <img class="shot cover" src="img/bitrot-cover.png" alt="BIT ROT cover">
       <div class="label">
         <span class="title">BIT ROT</span>
@@ -20,7 +24,17 @@
       </div>
     </a>
 
-    <a class="entry" href="platuzzle.html" data-bg="#d7d7d7" data-style="platuzzle">
+    <section class="home-index" aria-label="What to look at">
+      <p class="home-lead">Three games, three design questions.</p>
+      <ol>
+        <li><b>BIT ROT</b><span>Ludum Dare 60 · team of 4</span>How a small rule set teaches itself, one turn at a time.</li>
+        <li><b>Platuzzle</b><span>Bezi Mega Jam · team of 3</span>How one map can be both the puzzle and the level.</li>
+        <li><b>Lightpath</b><span>Solo · since 2025</span>How a project is built, and how its levels grew over a year.</li>
+      </ol>
+      <p class="note">Click a cover to enter.</p>
+    </section>
+
+    <a class="entry e-platuzzle" href="platuzzle.html" data-bg="#d7d7d7" data-style="platuzzle">
       <img class="shot cover" src="img/platuzzle-cover.png" alt="Platuzzle cover">
       <div class="label">
         <span class="title">Platuzzle</span>
@@ -28,16 +42,16 @@
       </div>
     </a>
 
-    <a class="entry" href="lightpath.html" data-bg="#06090d" data-style="lightpath">
+    <a class="entry e-lightpath" href="lightpath.html" data-bg="#06090d" data-style="lightpath">
       <img class="shot cover" src="img/lightpath-cover.jpg" alt="Lightpath, level SNF-1 in the 3D view">
       <div class="label">
         <span class="title">Lightpath</span>
         <span class="tag">Long-term · 2025– · engineering log</span>
       </div>
     </a>
-  </nav>
+  </main>
 
-
+  <script src="home-grid.js"></script>
   <script src="transition.js"></script>
 </body>
 </html>
