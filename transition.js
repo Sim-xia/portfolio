@@ -168,12 +168,20 @@
     return {left: Math.max(48, (vw - 1240) / 2 + 48), top: (innerHeight - h) / 2, width: w, height: h};
   }
 
+  // One transition at a time: while one plays, every link click is swallowed, so a double click
+  // (or a click on another cover) cannot start a second transition on top of the first.
+  let busy = false;
+  document.addEventListener("click", (e) => {
+    if (busy && e.target.closest("a")) { e.preventDefault(); e.stopImmediatePropagation(); }
+  }, true);
+
   // Enter a work.
   document.addEventListener("click", (e) => {
     const link = e.target.closest("a.entry[data-style]");
     const style = link && STYLES[link.dataset.style];
     if (!style || modified(e) || reduceMotion.matches) return;
     e.preventDefault();
+    busy = true;
     const shot = link.querySelector(".shot");
     const from = box(shot.getBoundingClientRect());
     const to = predictedHero() || from;
@@ -232,6 +240,7 @@
       ctx.fillRect(0, 0, innerWidth, innerHeight);
       shot.style.visibility = "hidden";
       const el = rect && flyer(shot.getAttribute("src"), rect);
+      busy = true;
       const start = () => {
         const home = box(shot.getBoundingClientRect());
         Promise.all([
@@ -241,6 +250,7 @@
           shot.style.visibility = "";
           if (el) el.remove();
           canvas.remove();
+          busy = false;
         });
       };
       if (document.readyState === "complete") setTimeout(start, 0);
@@ -251,6 +261,7 @@
   // Back/forward cache restores: drop any leftover overlay.
   addEventListener("pageshow", (e) => {
     if (!e.persisted) return;
+    busy = false;
     document.querySelectorAll(".veil, .flyer").forEach((v) => v.remove());
     document.querySelectorAll(".entry .shot").forEach((s) => (s.style.visibility = ""));
     root.classList.remove("arriving");
